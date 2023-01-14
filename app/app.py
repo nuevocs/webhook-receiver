@@ -27,5 +27,5 @@ class MyHandler(http.server.BaseHTTPRequestHandler):
 
 
 if __name__ == "__main__":
-    with socketserver.TCPServer(("", 80), MyHandler) as httpd:
+    with socketserver.TCPServer(("", 8080), MyHandler) as httpd:
         httpd.serve_forever()
