@@ -26,5 +26,6 @@ class MyHandler(http.server.BaseHTTPRequestHandler):
         self.wfile.write(b'Hello from do_POST')
 
 
-with socketserver.TCPServer(("", 80), MyHandler) as httpd:
-    httpd.serve_forever()
+if __name__ == "__main__":
+    with socketserver.TCPServer(("", 80), MyHandler) as httpd:
+        httpd.serve_forever()
