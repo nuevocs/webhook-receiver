@@ -7,8 +7,9 @@ services:
     build: app
     ports:
       - 38080:8080
+    networks:
+      - nginxproxymanager_default
 
 networks:
-  default:
-    external:
-      name: bridge
+  nginxproxymanager_default:
+    external: true
