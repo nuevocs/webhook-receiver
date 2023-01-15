@@ -10,7 +10,7 @@ class MainHandler(tornado.web.RequestHandler):
     def get(self):
         self.write("Hello, world")
 
-    def webhook(self):
+    def post(self):
         if self.request.method == "POST":
             print("Data received from Webhook is: ", requests.json)
             self.write("Webhook received!")
