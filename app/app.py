@@ -1,31 +1,41 @@
-# -*- coding:utf-8 -*-
-import http.server
-import socketserver
-import datetime
-from urllib.parse import parse_qs, urlparse
+import tornado.ioloop
+import tornado.web
+from pywebio.platform.tornado import webio_handler
+from pywebio.output import *
+from pywebio import STATIC_PATH
+import requests
 
 
-class MyHandler(http.server.BaseHTTPRequestHandler):
-    def do_POST(self):
-        print('path = {}'.format(self.path))
-        parsed_path = urlparse(self.path)
-        print('parsed: path = {}, query = {}'.format(parsed_path.path, parse_qs(parsed_path.query)))
-        print('headers\r\n-----\r\n{}-----'.format(self.headers))
-        content_length = int(self.headers['content-length'])
+class MainHandler(tornado.web.RequestHandler):
+    def get(self):
+        self.write("Hello, world")
 
-        # Body書き出し
-        now = datetime.datetime.now()
-        file_name = 'wbhk_out_' + now.strftime('%Y%m%d_%H%M%S') + '.json'
-        req_body = self.rfile.read(content_length).decode("utf-8")
-        with open(file_name, 'w') as f:
-            f.write(req_body)
+    def webhook(self):
+        if self.request.method == "POST":
+            print("Data received from Webhook is: ", requests.json)
+            self.write("Webhook received!")
+        elif self.request.method == "GET":
+            self.write("GET data received.")
+        else:
+            pass
 
-        self.send_response(200)
-        self.send_header('Content-Type', 'text/plain; charset=utf-8')
-        self.end_headers()
-        self.wfile.write(b'Hello from do_POST')
+
+def task_func() -> None:
+    put_markdown("""
+        # Year!!!!
+        - 1
+        - 2
+        - 3
+    """)
 
 
 if __name__ == "__main__":
-    with socketserver.TCPServer(("", 8080), MyHandler) as httpd:
-        httpd.serve_forever()
+    application = tornado.web.Application([
+        (r"/", MainHandler),
+        (r"/tool", webio_handler(task_func)),  # `task_func` is PyWebIO task function
+    ])
+    application.listen(port=18080, address='0.0.0.0') # run python3 app.py
+
+    # application.listen(port=8080, address='localhost') # run python3 app.py
+
+    tornado.ioloop.IOLoop.current().start()
