@@ -11,13 +11,14 @@ class MainHandler(tornado.web.RequestHandler):
         self.write("Hello, world")
 
     def post(self):
-        if self.request.method == "POST":
-            print("Data received from Webhook is: ", requests.json)
-            self.write("Webhook received!")
-        elif self.request.method == "GET":
-            self.write("GET data received.")
-        else:
-            pass
+        self.write("this is post")
+        # if self.request.method == "POST":
+        #     print("Data received from Webhook is: ", requests.json)
+        #     self.write("Webhook received!")
+        # elif self.request.method == "GET":
+        #     self.write("GET data received.")
+        # else:
+        #     pass
 
 
 def task_func() -> None:
