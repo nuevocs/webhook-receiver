@@ -9,8 +9,8 @@ services:
       - 38080:28080
     networks:
       - nginxproxymanager_default
-    volumes:
-      - /docker/webhook-tornado/app:/app
+    env_file:
+      - stack.env
 
 networks:
   nginxproxymanager_default:
