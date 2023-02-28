@@ -75,8 +75,8 @@ def fct_neko_data_add(data):
 
 """ Main """
 
-static_path = os.path.join(os.path.dirname('.'), 'app/static')
-templates_path = os.path.join(os.path.dirname('.'), 'app/templates')
+static_path = os.path.join(os.path.dirname('.'), '/static')
+templates_path = os.path.join(os.path.dirname('.'), '/templates')
 
 class MainHandler(tornado.web.RequestHandler):
 
