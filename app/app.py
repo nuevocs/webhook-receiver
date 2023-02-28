@@ -15,14 +15,15 @@ import requests
 import json
 from dataclasses import dataclass
 from pathlib import Path
+
 """ DB """
 from typing import Optional
 from sqlmodel import Field, Session, SQLModel, create_engine
 import apprise as ap
 
 from dotenv import load_dotenv
-load_dotenv()
 
+load_dotenv()
 
 token = os.getenv('APPRISE_TOKEN')
 apprise_id = os.getenv('APPRISE_ID')
@@ -31,17 +32,12 @@ apobj = ap.Apprise()
 apobj.add(target)
 
 
-
-
-
-
 class Neko(SQLModel, table=True):
     __tablename__ = "neko_db"
     id: int = Field(primary_key=True)
     name: str
     weight: float
     sex: str
-
 
 
 sqlite_file_name = "test.db"
@@ -57,13 +53,17 @@ if Path.is_file(db_path) is True:
 else:
     print("database does not exist. Hence will be created")
     SQLModel.metadata.create_all(engine)
+
+
     def create_db_and_tables():
         SQLModel.metadata.create_all(engine)
+
+
     create_db_and_tables()
 
 
 def fct_neko_data_add(data):
-    data = Neko (
+    data = Neko(
         name=data["name"],
         weight=data["weight"],
         sex=data["sex"]
@@ -74,13 +74,15 @@ def fct_neko_data_add(data):
 
 
 """ Main """
+gcd = os.getcwd()
+static_path = os.path.join(gcd, 'app/static')
+templates_path = os.path.join(gcd, 'app/templates')
 
-static_path = os.path.join(os.path.dirname('.'), '/static')
-templates_path = os.path.join(os.path.dirname('.'), '/templates')
+# print(templates_path)
 
 class MainHandler(tornado.web.RequestHandler):
-
     """Request handler where requests and responses speak JSON."""
+
     def get(self):
         # self.write("Hello, world")
         name = self.get_argument('name', 'World')
@@ -122,7 +124,7 @@ class Webhook(tornado.web.RequestHandler):
 
             print('data_output_json.dumps:', json.dumps(data_output, indent=4))
 
-            self.write(data_output) # it will send as JSON
+            self.write(data_output)  # it will send as JSON
 
             # for value in data_input.get("results"):
             #     fct_neko_data_add(value)
@@ -152,9 +154,6 @@ class Webhook(tornado.web.RequestHandler):
         }
 
 
-
-
-
 def task_func() -> None:
     put_markdown("""
         # Year!!!!
@@ -177,7 +176,6 @@ handlers = [
     (r"/tool", webio_handler(task_func))
     # (r'(.*)', web.StaticFileHandler, {'path': static_root})
 ]
-
 
 if __name__ == "__main__":
     port = 28080
