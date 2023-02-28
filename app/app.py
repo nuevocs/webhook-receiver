@@ -18,6 +18,22 @@ from pathlib import Path
 """ DB """
 from typing import Optional
 from sqlmodel import Field, Session, SQLModel, create_engine
+import apprise as ap
+
+from dotenv import load_dotenv
+load_dotenv()
+
+
+token = os.getenv('APPRISE_TOKEN')
+apprise_id = os.getenv('APPRISE_ID')
+target = f"tgram://{token}/{apprise_id}"
+apobj = ap.Apprise()
+apobj.add(target)
+
+
+
+
+
 
 class Neko(SQLModel, table=True):
     __tablename__ = "neko_db"
@@ -59,8 +75,8 @@ def fct_neko_data_add(data):
 
 """ Main """
 
-static_path = os.path.join(os.path.dirname('.'), 'static')
-templates_path = os.path.join(os.path.dirname('.'), 'templates')
+static_path = os.path.join(os.path.dirname('.'), 'app/static')
+templates_path = os.path.join(os.path.dirname('.'), 'app/templates')
 
 class MainHandler(tornado.web.RequestHandler):
 
@@ -94,13 +110,22 @@ class Webhook(tornado.web.RequestHandler):
             print(data_input.values())
             data_output = self.webhook_result(data_input)  # get as normal dict, not string
 
+            msg = data_output.get("name")[0]
+            print(msg)
             print('data_output:', data_output)
+
+            apobj.notify(
+                body=msg,
+                title='my notification title'
+                # attach=attach
+            )
+
             print('data_output_json.dumps:', json.dumps(data_output, indent=4))
 
             self.write(data_output) # it will send as JSON
 
-            for value in data_input.get("result"):
-                fct_neko_data_add(value)
+            # for value in data_input.get("results"):
+            #     fct_neko_data_add(value)
 
         else:
             self.write({'error': 'Wrong Content-Type'})  # it will send as JSON
@@ -111,7 +136,7 @@ class Webhook(tornado.web.RequestHandler):
         names = []
         weights = []
         sexes = []
-        for n in data.get("result"):
+        for n in data.get("results"):
             name = n.get("name")
             weight = n.get("weight")
             sex = n.get("sex")
@@ -155,7 +180,7 @@ handlers = [
 
 
 if __name__ == "__main__":
-    port = 8080
+    port = 28080
     application = tornado.web.Application(handlers, **settings)
     application.listen(port=port, address='0.0.0.0')  # run python3 app.py
 
