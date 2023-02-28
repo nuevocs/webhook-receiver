@@ -75,8 +75,8 @@ def fct_neko_data_add(data):
 
 """ Main """
 gcd = os.getcwd()
-static_path = os.path.join(gcd, 'app/static')
-templates_path = os.path.join(gcd, 'app/templates')
+static_path = os.path.join(gcd, 'static')
+templates_path = os.path.join(gcd, 'templates')
 
 # print(templates_path)
 
