@@ -6,7 +6,7 @@ services:
     restart: always
     build: app
     ports:
-      - 38080:8080
+      - 38080:28080
     networks:
       - nginxproxymanager_default
 
